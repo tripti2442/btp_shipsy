@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users.js');
 const Group = require('../models/Groups.js');
-
+const Evaluation = require('../models/Evaluations.js');
 
 const verifyToken = async (req) => {
     try {
@@ -45,7 +45,7 @@ const evaluate_team = async (req, res) => {
         }
         const supervisorId = supervisor._id;
 
-        const group_id = req.params.groupId;
+        const group_id = req.params._id;
         if (!group_id) {
             return res.status(400).json({ message: "Group ID is required" });
         }

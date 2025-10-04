@@ -29,7 +29,6 @@ const verifyToken = async (req) => {
 
 const display_teams = async (req, res) => {
     try {
-        
         const { name, status, error } = await verifyToken(req);
         if (status !== 200) {
             return res.status(status).json({ message: error });
@@ -38,26 +37,31 @@ const display_teams = async (req, res) => {
         const supervisor = await User.findOne({
             username: name,
             role: 'supervisor'
-        })
-        
+        });
+
         if (!supervisor) {
-            return null; // supervisor not found
+            return res.status(404).json({ message: "Supervisor not found." });
         }
 
-        const supervisorId= supervisor._id;
+        const supervisorId = supervisor._id;
 
-        const groups = await Group.find({supervisor_id : supervisorId});
+        // Populate members' username and roll_no
+        const groups = await Group.find({ supervisor_id: supervisorId })
+            .populate({
+                path: 'members',
+                select: 'username roll_no'
+            });
 
-
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Groups Found!",
             groups
         });
 
     } catch (err) {
-        console.error("Error in displaying_group:", err);
+        console.error("Error in displaying_teams:", err);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 module.exports = { display_teams };

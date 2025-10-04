@@ -80,3 +80,45 @@ export const create_group = async ({ title, supervisor_id, members }) => {
     throw error.response?.data || { message: "Server error" };
   }
 };
+
+export const fetch_teams= async ()=>{
+    try{
+        const response= await axios.get(`${API_URL}/display_teams`,{withCredentials:true});
+        return response.data;
+    }
+    catch(error){
+        console.log("error: ",error);
+    }
+
+}
+
+export const evaluate_team = async (groupId, { report_marks, literature_survey_marks, work_done_marks, presentation_marks }) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/evaluate_team/${groupId}`, // groupId in params
+      { report_marks, literature_survey_marks, work_done_marks, presentation_marks }, // body
+      { withCredentials: true } // include cookies for auth
+    );
+
+    return response.data; // return backend response
+  } catch (error) {
+    console.error("Error evaluating team:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
+
+export const fetch_evaluation = async (groupId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/view_evaluation/${groupId}`, // groupId in params
+      { withCredentials: true } // include cookies for auth
+    );
+
+    return response.data; // return backend response
+  } catch (error) {
+    console.error("Error view_evaluation:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
+
+

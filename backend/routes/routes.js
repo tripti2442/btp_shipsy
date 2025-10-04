@@ -27,7 +27,7 @@ router.patch('/update_group/:_id',update_grp);
 router.delete('/delete_group/:_id',delete_grp);
 router.get('/view_evaluation/:_id',view_evaluation);
 router.get('/display_teams',display_teams);
-router.post('/evaluate_team',evaluate_team);
+router.post('/evaluate_team/:_id',evaluate_team);
 router.get('/fetch_supervisors',fetch_supervisors);
 router.get('/fetch_students',fetch_students);
 

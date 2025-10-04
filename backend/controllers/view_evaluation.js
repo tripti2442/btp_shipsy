@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users.js');
 const Group = require('../models/Groups.js');
+const Evaluation = require('../models/Evaluations.js');
 
 const verifyToken = async (req) => {
     try {
@@ -12,10 +13,7 @@ const verifyToken = async (req) => {
         const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         const { username, role } = decodedToken;
 
-        if (role !== 'admin') {
-            return { error: 'Unauthorized: Only admins can perform this action', status: 403 };
-        }
-
+        
         return { name: username, status: 200 };
     } catch (error) {
         console.error('JWT verification error:', error);
@@ -32,7 +30,7 @@ const view_evaluation = async (req, res) => {
             return res.status(status).json({ message: error });
         }
 
-        const groupId = req.params.groupId;
+        const groupId = req.params._id
         if (!groupId) {
             return res.status(400).json({ message: "Group ID is required" });
         }

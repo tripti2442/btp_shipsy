@@ -23,7 +23,7 @@ const LoginPage = () => {
             }
 
 
-            navigate("/studentdashboard");
+            navigate("/supervisordashboard");
         })
 
         console.log('Logging in with:', loginData);

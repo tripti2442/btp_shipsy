@@ -4,6 +4,7 @@ import './App.css';
 import SignupPage from './components/Signup';
 import LoginPage from './components/Login';
 import StudentDashboard from './components/StudentDashboard';
+import SupervisorDashboard from './components/SupervisorDashboard';
 
 function App() {
     // Initialize token state from localStorage
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signin" element={<SignupPage />} />
                 <Route path="/studentdashboard" element={<StudentDashboard />} />
+                <Route path="/supervisordashboard" element={<SupervisorDashboard />} />
                 
                 
 
