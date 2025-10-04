@@ -62,6 +62,7 @@ const login = async (req, res) => {
       user: {
         username: existUser.username,
         role: existUser.role,
+        id: existUser._id,
         ...(existUser.role === 'student' && { roll_no: existUser.roll_no })
       }
     });

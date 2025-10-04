@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users.js');
 const Group = require('../models/Groups.js');
-const Evaluation = require('../models/Evaluation.js'); // Import Evaluation
+const Evaluation = require('../models/Evaluations.js'); // Import Evaluation
 
 // Verify student token
 const verifyToken = async (req) => {

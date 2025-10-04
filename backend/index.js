@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended: true}));
 
 
 const corsOptions = {
-    origin: 'http://localhost:3000', // Allow only this origin
+    origin: true, // Allow only this origin
     optionsSuccessStatus: 200 ,// Some legacy browsers (IE11, various SmartTVs) choke on 204
     credentials :true
 };

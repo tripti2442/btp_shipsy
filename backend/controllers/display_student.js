@@ -26,29 +26,28 @@ const verifyToken = async (req) => {
     }
 };
 
-
 const display_group = async (req, res) => {
     try {
-        
         const { name, roll_no, status, error } = await verifyToken(req);
         if (status !== 200) {
             return res.status(status).json({ message: error });
         }
 
-        
         const student = await User.findOne({ roll_no });
         if (!student) {
             return res.status(404).json({ message: "Student not found." });
         }
 
-       
-        const existingGroup = await Group.findOne({ members: student._id });
+        // Populate members (username + roll_no) and supervisor (username)
+        const existingGroup = await Group.findOne({ members: student._id })
+            .populate('members', 'username roll_no')  // only get username & roll_no for members
+            .populate('supervisor_id', 'username');      // only get username for supervisor
+
         if (!existingGroup) {
-            return res.status(404).json({ message: "No  Group Found." });
+            return res.status(404).json({ message: "No Group Found." });
         }
 
-
-        return res.status(201).json({
+        return res.status(200).json({
             message: "Group Found!",
             existingGroup
         });
