@@ -23,62 +23,87 @@ const verifyToken = async (req) => {
     }
 };
 
-
 const update_grp = async (req, res) => {
     try {
-
         const { name, status, error } = await verifyToken(req);
         if (status !== 200) {
             return res.status(status).json({ message: error });
         }
 
-        const groupId = req.params.groupId;
+        const groupId = req.params._id;
         if (!groupId) {
             return res.status(400).json({ message: "Group ID is required" });
         }
-        const group = await Group.findById(groupId)
+
+        const group = await Group.findById(groupId);
         if (!group) {
             return res.status(404).json({ message: "Group not found" });
         }
 
-        const { title, supervisor_id, members } = req.body;
+        const { title, supervisor_name, members } = req.body;
 
-        if (supervisor_id) {
-            const supervisor = await User.findById(supervisor_id);
-            if (!supervisor || supervisor.role !== 'supervisor') {
-                return res.status(400).json({ message: "Invalid supervisor_id" });
+        // ✅ Step 1: Validate supervisor
+        let supervisor_id = null;
+        if (supervisor_name) {
+            const supervisor = await User.findOne({ username: supervisor_name, role: 'supervisor' });
+            if (!supervisor) {
+                return res.status(400).json({ message: "Invalid supervisor name" });
             }
+            supervisor_id = supervisor._id;
         }
+        
 
+        // ✅ Step 2: Validate and fetch member IDs using roll_no
+        let member_ids = [];
         if (members && members.length > 0) {
-            const students = await User.find({ _id: { $in: members } });
-            if (students.some(s => s.role !== 'student')) {
-                return res.status(400).json({ message: "All members must have role 'student'" });
+            const rollNumbers = members.map(m => m.roll_no); // expecting array of { username, roll_no }
+            const foundStudents = await User.find({ roll_no: { $in: rollNumbers }, role: 'student' });
+
+            if (foundStudents.length !== members.length) {
+                return res.status(400).json({ message: "Some members not found or not students" });
             }
-            if (members.length > 3) {
+
+            if (foundStudents.length > 3) {
                 return res.status(400).json({ message: "Group cannot have more than 3 members" });
             }
 
+            member_ids = foundStudents.map(s => s._id);
         }
 
-        const updated_group= await Group.findByIdAndUpdate(
+
+        const updateFields = {};
+
+
+        if (title) {
+            updateFields.title = title;
+        }
+
+        if (supervisor_id) {
+            updateFields.supervisor_id = supervisor_id;
+        }
+
+        if (member_ids && member_ids.length > 0) {
+            updateFields.members = member_ids;
+        }
+
+
+        const updatedGroup = await Group.findByIdAndUpdate(
             groupId,
-            { title, supervisor_id, members},
+            updateFields,
             { new: true, runValidators: true }
         )
+            .populate('members', 'username roll_no')
+            .populate('supervisor_id', 'username');
+
 
         if (!updatedGroup) {
-            return res.status(404).json({ message: "Group not found" });
+            return res.status(404).json({ message: "Group not found after update" });
         }
 
         return res.status(200).json({
             message: "Group updated successfully",
             group: updatedGroup
         });
-
-
-
-
 
     } catch (err) {
         console.error("Error updating group:", err);

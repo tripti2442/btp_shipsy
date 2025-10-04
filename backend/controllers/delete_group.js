@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users.js');
 const Group = require('../models/Groups.js');
+const Evaluation = require('../models/Evaluations.js');
 
 const verifyToken = async (req) => {
     try {
@@ -32,7 +33,7 @@ const delete_grp = async (req, res) => {
             return res.status(status).json({ message: error });
         }
 
-        const groupId = req.params.groupId;
+        const groupId = req.params._id;
         if (!groupId) {
             return res.status(400).json({ message: "Group ID is required" });
         }
@@ -46,6 +47,9 @@ const delete_grp = async (req, res) => {
         const delete_group= await Group.findByIdAndDelete(
             groupId,
         )
+
+        const evaluation = await Evaluation.findOneAndDelete({ group_id: groupId });
+
 
        
 

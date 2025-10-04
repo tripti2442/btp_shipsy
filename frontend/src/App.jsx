@@ -5,6 +5,7 @@ import SignupPage from './components/Signup';
 import LoginPage from './components/Login';
 import StudentDashboard from './components/StudentDashboard';
 import SupervisorDashboard from './components/SupervisorDashboard';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
     // Initialize token state from localStorage
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/signin" element={<SignupPage />} />
                 <Route path="/studentdashboard" element={<StudentDashboard />} />
                 <Route path="/supervisordashboard" element={<SupervisorDashboard />} />
+                <Route path="/admindashboard" element={<AdminDashboard />} />
                 
                 
 

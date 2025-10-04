@@ -45,7 +45,7 @@ const SignupPage = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
  
-      navigate("/studentdashboard");
+      navigate("/admindashboard");
     })
 
     console.log('Submitting:', signupData);

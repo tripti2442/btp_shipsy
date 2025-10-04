@@ -121,4 +121,37 @@ export const fetch_evaluation = async (groupId) => {
   }
 };
 
+export const update_group = async (groupId, updatedData) => {
+  try {
+    console.log(updatedData.supervisor_name);
+    const res = await axios.patch(`${API_URL}/update_group/${groupId}`, updatedData, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error updating group:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
 
+export const delete_group = async (groupId) => {
+  try {
+    const res = await axios.delete(`${API_URL}/delete_group/${groupId}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error deleting group:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
+
+export const fetch_all_groups = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/display_all`, { withCredentials: true });
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching groups:", error);
+    throw error.response?.data || { message: "Server error" };
+  }
+};
