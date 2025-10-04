@@ -4,7 +4,7 @@ const { DBConnection }= require('./database/db.js');
 const jwt = require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
 const dotenv= require('dotenv');
-// const  router= require('./routes/routes.js')
+const  router= require('./routes/routes.js')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 dotenv.config();
@@ -26,7 +26,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// app.use('/',router);
+app.use('/',router);
 
 DBConnection(); 
 // app.get("/",(req,res)=>{

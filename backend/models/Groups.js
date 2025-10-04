@@ -17,12 +17,12 @@ const groupSchema = new mongoose.Schema({
     members: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Student'
+            ref: 'User'
         }],
         required: true,
         validate: [arrayLimit, 'Group cannot have more than 3 members.']
     },
-    is_registered: {
+    is_evaluated: {
         type: Boolean,
         default: false
     },
