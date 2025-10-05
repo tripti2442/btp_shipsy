@@ -42,7 +42,7 @@ const update_grp = async (req, res) => {
 
         const { title, supervisor_name, members } = req.body;
 
-        // ✅ Step 1: Validate supervisor
+        // Step 1: Validate supervisor
         let supervisor_id = null;
         if (supervisor_name) {
             const supervisor = await User.findOne({ username: supervisor_name, role: 'supervisor' });
@@ -53,7 +53,7 @@ const update_grp = async (req, res) => {
         }
         
 
-        // ✅ Step 2: Validate and fetch member IDs using roll_no
+        // step 2: Validate and fetch member IDs using roll_no
         let member_ids = [];
         if (members && members.length > 0) {
             const rollNumbers = members.map(m => m.roll_no); // expecting array of { username, roll_no }
