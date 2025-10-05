@@ -71,7 +71,7 @@ const signup = async (req, res) => {
       user: {
         username: user.username,
         role: user.role,
-        id: existUser._id,
+        id: user._id,
         ...(user.role === 'student' && { roll_no: user.roll_no })
       }
     });

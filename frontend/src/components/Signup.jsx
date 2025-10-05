@@ -64,7 +64,7 @@ const SignupPage = () => {
 
     })
 
-    console.log('Submitting:', signupData);
+    
     // TODO: Add your API call logic here (e.g., axios.post(...))
   };
 

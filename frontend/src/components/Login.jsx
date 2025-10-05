@@ -40,7 +40,7 @@ const LoginPage = () => {
             }
         });
 
-        console.log('Logging in with:', loginData);
+        
     };
 
     return (

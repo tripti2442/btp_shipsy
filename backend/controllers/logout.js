@@ -4,6 +4,7 @@ const logout = async (req, res) => {
     try {
         
         res.clearCookie('token');
+        console.log("logout_endpoint");
 
         return res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
