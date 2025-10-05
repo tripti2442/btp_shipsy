@@ -94,7 +94,7 @@ The backend uses Node.js and Express.js with MongoDB for data storage. The front
 ## Installation
 
 1. Clone the repository:
-   git clone https://github.com/tripti2442/btp-ship-sy.git
+   git clone https://github.com/tripti2442/btp_shipsy.git
 2. Install backend dependencies:
    cd backend
    npm install
