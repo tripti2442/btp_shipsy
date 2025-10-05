@@ -20,8 +20,11 @@ function App() {
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signin" element={<SignupPage />} />
+                <Route path="/admindashboard" element={<AdminDashboard />} />
+                <Route path="/supervisordashboard" element={<SupervisorDashboard />} />
+                <Route path="/studentdashboard" element={<StudentDashboard />} />
                 
-                <Route 
+                {/* <Route 
                     path="/admindashboard" 
                     element={isLoggedIn() ? <AdminDashboard /> : <Navigate to="/login" />}                
                 />
@@ -32,7 +35,7 @@ function App() {
                 <Route 
                     path="/studentdashboard"
                     element={isLoggedIn() ? <StudentDashboard /> : <Navigate to="/login" />}                
-                />
+                /> */}
                 
                 
 
