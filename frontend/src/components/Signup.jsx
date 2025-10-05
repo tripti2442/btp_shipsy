@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate , Link ,useNavigate} from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { signup } from '../services/api';
 
 const SignupPage = () => {
@@ -37,15 +37,31 @@ const SignupPage = () => {
       ...(role === 'student' && { rollNo }), // Include rollNo only if role is student
     };
 
-    const dataPromise= signup(username, password, role, rollNo);
+    const dataPromise = signup(username, password, role, rollNo);
 
-    dataPromise.then((data)=>{
+    dataPromise.then((data) => {
       console.log(data.message);
       if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
- 
-      navigate("/admindashboard");
+
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        navigate("/login");
+      } else {
+        const user = JSON.parse(userString); // parse the string to object
+
+        if (user.role === 'student') {
+          navigate("/studentdashboard");
+        } else if (user.role === 'admin') {
+          navigate("/admindashboard");
+        } else if (user.role === 'supervisor') {
+          navigate("/supervisordashboard");
+        } else {
+          navigate("/login");
+        }
+      }
+
     })
 
     console.log('Submitting:', signupData);
@@ -86,9 +102,8 @@ const SignupPage = () => {
               id="password"
               type="password"
               placeholder="******************"
-              className={`shadow appearance-none border ${
-                passwordError ? 'border-red-500' : ''
-              } rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight 
+              className={`shadow appearance-none border ${passwordError ? 'border-red-500' : ''
+                } rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight 
                          focus:outline-none focus:shadow-outline`}
               value={password}
               onChange={handlePasswordChange}

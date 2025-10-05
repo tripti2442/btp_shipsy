@@ -12,6 +12,8 @@ const { display_teams }=require('../controllers/display_teams');
 const { evaluate_team }=require('../controllers/evaluate_team');
 const { fetch_supervisors }=require('../controllers/fetch_supervisors');
 const { fetch_students }=require('../controllers/fetch_students');
+const { logout }=require('../controllers/logout');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -30,5 +32,6 @@ router.get('/display_teams',display_teams);
 router.post('/evaluate_team/:_id',evaluate_team);
 router.get('/fetch_supervisors',fetch_supervisors);
 router.get('/fetch_students',fetch_students);
+router.get('/logout',logout);
 
 module.exports = router;

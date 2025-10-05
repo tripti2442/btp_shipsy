@@ -32,10 +32,16 @@ const display_all = async (req, res) => {
             return res.status(status).json({ message: error });
         }
 
+        const { order = "asc"} = req.query;
+        const sortOrder = order === "asc" ? 1 : -1;
+        const sortBy = "created_at";
         
         const groups = await Group.find()
             .populate('supervisor_id', 'username role') 
-            .populate('members', 'username role roll_no'); 
+            .populate('members', 'username role roll_no')
+            .sort({ [sortBy]: sortOrder })
+
+
 
         res.status(200).json({
             message: "All groups fetched successfully",

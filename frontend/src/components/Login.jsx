@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../services/api';
 
 const LoginPage = () => {
@@ -22,29 +22,48 @@ const LoginPage = () => {
                 localStorage.setItem('user', JSON.stringify(data.user));
             }
 
+            const userString = localStorage.getItem('user');
+            if (!userString) {
+                navigate("/login");
+            } else {
+                const user = JSON.parse(userString); 
 
-            navigate("/admindashboard");
-        })
+                if (user.role === 'student') {
+                    navigate("/studentdashboard");
+                } else if (user.role === 'admin') {
+                    navigate("/admindashboard");
+                } else if (user.role === 'supervisor') {
+                    navigate("/supervisordashboard");
+                } else {
+                    navigate("/signin");
+                }
+            }
+        });
 
         console.log('Logging in with:', loginData);
-
-
-        // TODO: Add your API call for authentication
     };
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center">
             <div className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4 max-w-md w-full">
+                
+                {/* Signup Link */}
+                <div className="text-right mb-4">
+                    <span className="text-gray-600 text-sm">
+                        New User?{' '}
+                        <Link to="/signin" className="text-blue-500 hover:underline">
+                            Sign Up
+                        </Link>
+                    </span>
+                </div>
+
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
                     Welcome Back
                 </h2>
                 <form onSubmit={handleSubmit}>
                     {/* Username */}
                     <div className="mb-4">
-                        <label
-                            htmlFor="username"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
+                        <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
                             Username
                         </label>
                         <input
@@ -60,10 +79,7 @@ const LoginPage = () => {
 
                     {/* Password */}
                     <div className="mb-4">
-                        <label
-                            htmlFor="password"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
+                        <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
                             Password
                         </label>
                         <input
@@ -79,10 +95,7 @@ const LoginPage = () => {
 
                     {/* Role Selector */}
                     <div className="mb-4">
-                        <label
-                            htmlFor="role"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
+                        <label htmlFor="role" className="block text-gray-700 text-sm font-bold mb-2">
                             Role
                         </label>
                         <select
@@ -100,10 +113,7 @@ const LoginPage = () => {
                     {/* Roll Number (only for students) */}
                     {role === 'student' && (
                         <div className="mb-4">
-                            <label
-                                htmlFor="rollNo"
-                                className="block text-gray-700 text-sm font-bold mb-2"
-                            >
+                            <label htmlFor="rollNo" className="block text-gray-700 text-sm font-bold mb-2">
                                 Roll Number
                             </label>
                             <input

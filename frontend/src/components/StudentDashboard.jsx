@@ -3,6 +3,9 @@ import { fetch_supervisors } from '../services/api';
 import { fetch_students } from '../services/api';
 import { create_group } from '../services/api';
 import { fetch_group } from '../services/api';
+import { fetch_evaluation } from '../services/api';
+import { logout} from '../services/api';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 
@@ -37,7 +40,7 @@ const GroupDetails = () => {
     }
 
     if (error) {
-        return <p className="text-red-500">{error}</p>;
+        return <h1 className="text-blue-500">Group not formed</h1>;
     }
 
     return (
@@ -265,37 +268,107 @@ const CreateGroup = () => {
     );
 };
 
-const EvaluationResults = () => (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Evaluation Results</h2>
-        <p className="text-gray-600">
-            Your group's evaluation marks and feedback will be shown here once they are released.
-        </p>
-        <div className="mt-4">
-            <p><span className="font-semibold">Total Marks:</span> 18/20</p>
-            <p><span className="font-semibold">Feedback:</span> Great work on the presentation. The report could be more detailed.</p>
-        </div>
-    </div>
-);
 
-// --- Main Dashboard Component ---
+const EvaluationResults = () => {
+        const [group, setGroup] = useState(null);
+        const [evaluation, setEvaluation] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState("");
+
+        useEffect(() => {
+            const loadEvaluation = async () => {
+                try {
+                    // Step 1: Fetch the student's group
+                    const groupData = await fetch_group();
+                    if (!groupData.existingGroup) {
+                        setError("No group found for this student.");
+                        setLoading(false);
+                        return;
+                    }
+
+                    setGroup(groupData.existingGroup);
+
+                    // Step 2: Fetch the evaluation for this group
+                    const groupId = groupData.existingGroup._id;
+                    const evalData = await fetch_evaluation(groupId);
+                    setEvaluation(evalData.evaluation || null);
+                } catch (err) {
+                    console.error(err);
+                    setError("Failed to load evaluation.");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            loadEvaluation();
+        }, []);
+
+        if (loading) return <p>Loading evaluation...</p>;
+        if (error) return <h2 className="text-blue-500">Your group's evaluation marks and feedback will be shown here once they are released.
+</h2>;
+
+        if (!evaluation) {
+            return (
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-2xl font-bold mb-4 text-gray-800">Evaluation Results</h2>
+                    <p className="text-gray-600">
+                        Your group's evaluation marks and feedback will be shown here once they are released.
+                    </p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold mb-4 text-gray-800">Evaluation Results</h2>
+                <div className="mt-4">
+                    <p>
+                        <span className="font-semibold">Report Marks:</span> {evaluation.report_marks}
+                    </p>
+                    <p>
+                        <span className="font-semibold">Literature Survey Marks:</span> {evaluation.literature_survey_marks}
+                    </p>
+                    <p>
+                        <span className="font-semibold">Work Done Marks:</span> {evaluation.work_done_marks}
+                    </p>
+                    <p>
+                        <span className="font-semibold">Presentation Marks:</span> {evaluation.presentation_marks}
+                    </p>
+                    <p>
+                        <span className="font-semibold">Total Marks:</span> {evaluation.total_marks}
+                    </p>
+                </div>
+            </div>
+        );
+    };
+
+
 const StudentDashboard = () => {
     const [activeView, setActiveView] = useState('groupDetails');
     const [groupData, setGroupData] = useState(null);
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            // Call your logout API if needed
+            const response = await logout();
+            localStorage.clear();
+            navigate('/login');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchGroup = async () => {
             try {
-                const dataPromise = fetch_group(username, password, role, rollNo);
-                dataPromise.then((data) => {
-                    console.log(data.message);
-                })
-                //setGroupData(response.data.group);
+                const data = await fetch_group();
+                console.log(data.message);
+                setGroupData(data.existingGroup || null);
             } catch (error) {
                 console.error('Failed to fetch group:', error);
             }
         };
-
         fetchGroup();
     }, []);
 
@@ -317,8 +390,7 @@ const StudentDashboard = () => {
         return (
             <button
                 onClick={() => setActiveView(viewName)}
-                className={`w-full text-left px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isActive ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-200'
-                    }`}
+                className={`w-full text-left px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isActive ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-200'}`}
             >
                 {children}
             </button>
@@ -326,21 +398,31 @@ const StudentDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex">
-            {/* Sidebar Navigation */}
-            <aside className="w-64 bg-white p-4 shadow-md">
-                <div className="mb-8 text-center">
-                    <h1 className="text-2xl font-bold text-blue-600">Dashboard</h1>
-                </div>
-                <nav className="space-y-2">
-                    <NavButton viewName="groupDetails">Group Details</NavButton>
-                    <NavButton viewName="createGroup">Create Group</NavButton>
-                    <NavButton viewName="evaluationResults">View Evaluations</NavButton>
-                </nav>
-            </aside>
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+            {/* Top bar with Logout */}
+            <header className="w-full bg-white shadow-md flex justify-between items-center px-6 py-4">
+                <h1 className="text-2xl font-bold text-blue-600">Student Dashboard</h1>
+                <button
+                    onClick={handleLogout}
+                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded"
+                >
+                    Logout
+                </button>
+            </header>
 
-            {/* Main Content Area */}
-            <main className="flex-1 p-8">{renderView()}</main>
+            <div className="flex flex-1">
+                {/* Sidebar Navigation */}
+                <aside className="w-64 bg-white p-4 shadow-md">
+                    <nav className="space-y-2">
+                        <NavButton viewName="groupDetails">Group Details</NavButton>
+                        <NavButton viewName="createGroup">Create Group</NavButton>
+                        <NavButton viewName="evaluationResults">View Evaluations</NavButton>
+                    </nav>
+                </aside>
+
+                {/* Main Content Area */}
+                <main className="flex-1 p-8">{renderView()}</main>
+            </div>
         </div>
     );
 };

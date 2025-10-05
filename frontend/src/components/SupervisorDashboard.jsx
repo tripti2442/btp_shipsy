@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { fetch_teams, evaluate_team, fetch_evaluation } from "../services/api"; // replace with your actual frontend API functions
+import { fetch_teams, evaluate_team, fetch_evaluation, logout } from "../services/api"; // ensure logout exists in api.js
+import { useNavigate } from "react-router-dom";
 
 const SupervisorDashboard = () => {
   const [teams, setTeams] = useState([]);
@@ -15,13 +16,17 @@ const SupervisorDashboard = () => {
   const [viewEvaluation, setViewEvaluation] = useState(null); // group id currently viewing evaluation
   const [evaluationData, setEvaluationData] = useState(null); // store evaluation for viewing
 
+  const navigate = useNavigate(); // for redirect after logout
+
   // Load teams on mount
   useEffect(() => {
     const loadTeams = async () => {
+      setLoading(true);
       try {
         const data = await fetch_teams();
         if (data.groups) {
           setTeams(data.groups);
+          setError("");
         } else {
           setError("No teams found.");
         }
@@ -88,12 +93,31 @@ const SupervisorDashboard = () => {
     }
   };
 
+  // Logout
+  const handleLogout = async () => {
+    try {
+      await logout(); // call your API logout function
+      navigate("/login"); // redirect to login page
+    } catch (err) {
+      console.error(err);
+      alert("Logout failed.");
+    }
+  };
+
   if (loading) return <p>Loading teams...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-4">Supervisor Dashboard</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold">Supervisor Dashboard</h2>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Logout
+        </button>
+      </div>
 
       {teams.map((team) => (
         <div key={team._id} className="bg-white shadow-md rounded p-4 mb-4">
