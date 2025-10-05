@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended: true}));
 
 
 const corsOptions = {
-    origin: true, // Allow only this origin
+    origin: "https://btp-shipsy.vercel.app",
     optionsSuccessStatus: 200 ,// Some legacy browsers (IE11, various SmartTVs) choke on 204
     credentials :true
 };
