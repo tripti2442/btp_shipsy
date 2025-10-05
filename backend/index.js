@@ -9,9 +9,11 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 dotenv.config();
 
-app.listen(5000,()=>{
-    console.log("listening to port 5000");
-})
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 //MIDDLEWARES
 app.use(express.json());
 app.use(cookieParser())
