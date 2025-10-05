@@ -1,5 +1,8 @@
 # BTP Shipsy - Project Management and Evaluation Platform
 
+## Full Documentation
+[Read Documentation](https://drive.google.com/file/d/17WelkCE3BTcJY_uBmtnfonCcR--Cm7_Z/view?usp=sharing](https://docs.google.com/document/d/1xrGpOSzHvVVj50_Z9X8UhrMclPkonzFr/edit?usp=sharing&ouid=117958093781975400393&rtpof=true&sd=true))
+
 ## Overview
 BTP Shipsy is a project management and evaluation platform designed for academic projects under the BTP program. The platform supports three types of users: students, supervisors, and admins. Each user role has distinct capabilities for interacting with project groups and evaluations.
 
