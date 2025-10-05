@@ -42,7 +42,8 @@ const AdminDashboard = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      window.location.href = "/login";
+      localStorage.clear();
+      navigate('/login');
     } catch (err) {
       console.error(err);
       alert("Logout failed.");

@@ -97,6 +97,7 @@ const SupervisorDashboard = () => {
   const handleLogout = async () => {
     try {
       await logout(); // call your API logout function
+      localStorage.clear();
       navigate("/login"); // redirect to login page
     } catch (err) {
       console.error(err);
