@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from 'react-router-dom';
 import {
   fetch_all_groups,
   update_group,
@@ -8,6 +9,7 @@ import {
 } from "../services/api";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
