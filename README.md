@@ -115,5 +115,9 @@ The backend uses Node.js and Express.js with MongoDB for data storage. The front
 ## Code Repository
 [https://github.com/tripti2442/btp_shipsy](https://github.com/tripti2442/btp_shipsy)
 
+## Demo Video
+[Watch the Demo Video](https://drive.google.com/file/d/17WelkCE3BTcJY_uBmtnfonCcR--Cm7_Z/view?usp=sharing)
+
+
 
  
